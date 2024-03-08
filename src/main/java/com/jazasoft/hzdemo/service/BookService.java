@@ -17,6 +17,7 @@ import java.util.List;
 @Service
 @Transactional(readOnly = true)
 public class BookService {
+  private static final String CACHE_BOOK_BY_CATEGORY = "book-by-category";
   private final BookRepository bookRepository;
   private final AuthorRepository authorRepository;
 
@@ -46,15 +47,11 @@ public class BookService {
     return bookRepository.findAll();
   }
 
-  @Cacheable(value = "query.book.findAllByCategory", key = "#category")
+  @Cacheable(value = CACHE_BOOK_BY_CATEGORY, key = "#category")
   public List<Book> findAllByCategory(String category) {
     List<Book> books = bookRepository.findAllByCategory(category);
     try {
-      books.forEach(book -> {
-        if (book.getAuthor() != null) {
-          book.getAuthor().setBookList(null);
-        }
-      });
+      books.forEach(this::sanitize);
       objectMapper.writer().writeValueAsString(books);
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
@@ -70,10 +67,7 @@ public class BookService {
     Book mBook = bookRepository.save(book);
 
     //** Evict Spring Cache for query matching this category **//
-    Cache cache = cacheManager.getCache("query.book.findAllByCategory");
-    if (cache != null) {
-      cache.evictIfPresent(mBook.getCategory());
-    }
+    evictCache(CACHE_BOOK_BY_CATEGORY, mBook.getCategory());
 
     return mBook;
   }
@@ -91,11 +85,8 @@ public class BookService {
     mBook.setCategory(book.getCategory());
 
     //** Evict Spring Cache for query matching this category **//
-    Cache cache = cacheManager.getCache("query.book.findAllByCategory");
-    if (cache != null) {
-      cache.evictIfPresent(prevCategory);
-      cache.evictIfPresent(mBook.getCategory());
-    }
+    evictCache(CACHE_BOOK_BY_CATEGORY, prevCategory);
+    evictCache(CACHE_BOOK_BY_CATEGORY, mBook.getCategory());
 
     return mBook;
   }
@@ -107,9 +98,20 @@ public class BookService {
     bookRepository.delete(book);
 
     //** Evict Spring Cache for query matching this category **//
-    Cache cache = cacheManager.getCache("query.book.findAllByCategory");
+    evictCache(CACHE_BOOK_BY_CATEGORY, book.getCategory());
+  }
+
+  private void evictCache(String cacheName, String category) {
+    Cache cache = cacheManager.getCache(cacheName);
     if (cache != null) {
-      cache.evictIfPresent(book.getCategory());
+      cache.evictIfPresent(category);
+    }
+  }
+
+  private void sanitize(Book book) {
+    if (book == null) return;
+    if (book.getAuthor() != null) {
+      book.getAuthor().setBookList(null);
     }
   }
 }

@@ -18,7 +18,7 @@ public class Author {
   private String name;
 
   @Cache(region = "author.books", usage = CacheConcurrencyStrategy.READ_WRITE)
-  @OneToMany(mappedBy = "author")
+  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Book> bookList = new ArrayList<>();
 
   public Author() {

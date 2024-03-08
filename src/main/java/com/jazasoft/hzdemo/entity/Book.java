@@ -8,7 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-//@Cache(region = "book", usage = CacheConcurrencyStrategy.READ_WRITE)
+@Cache(region = "book", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
 public class Book implements Serializable {
 

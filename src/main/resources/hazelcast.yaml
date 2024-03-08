@@ -7,8 +7,5 @@ hazelcast:
     join:
       multicast:
         enabled: true
-    rest-api:
-      enabled: false
-      endpoint-groups:
-        DATA:
-          enabled: false
+        multicast-group: 224.2.2.3
+        multicast-port: 54327

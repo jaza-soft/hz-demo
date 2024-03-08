@@ -5,6 +5,8 @@ import com.jazasoft.hzdemo.service.AuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/authors")
 public class AuthorRestController {
@@ -16,7 +18,7 @@ public class AuthorRestController {
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    Iterable<Author> authors = authorService.findAll();
+    List<Author> authors = authorService.findAll();
     authors.forEach(this::sanitize);
     return ResponseEntity.ok(authors);
   }

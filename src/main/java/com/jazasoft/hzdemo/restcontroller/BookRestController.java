@@ -5,6 +5,8 @@ import com.jazasoft.hzdemo.service.BookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/books")
 public class BookRestController {
@@ -16,14 +18,14 @@ public class BookRestController {
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    Iterable<Book> books = bookService.findAll();
+    List<Book> books = bookService.findAll();
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping("/search-by-category")
   public ResponseEntity<?> findAllByCategory(@RequestParam("category") String category) {
-    Iterable<Book> books = bookService.findAllByCategory(category);
+    List<Book> books = bookService.findAllByCategory(category);
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }

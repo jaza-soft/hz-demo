@@ -5,6 +5,8 @@ import com.jazasoft.hzdemo.repository.AuthorRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class AuthorService {
@@ -18,7 +20,7 @@ public class AuthorService {
     return authorRepository.findById(id).orElse(null);
   }
 
-  public Iterable<Author> findAll() {
+  public List<Author> findAll() {
     return authorRepository.findAll();
   }
 

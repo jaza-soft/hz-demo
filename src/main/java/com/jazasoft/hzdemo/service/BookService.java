@@ -6,6 +6,8 @@ import com.jazasoft.hzdemo.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 public class BookService {
@@ -21,11 +23,11 @@ public class BookService {
     return bookRepository.findById(id).orElse(null);
   }
 
-  public Iterable<Book> findAll() {
+  public List<Book> findAll() {
     return bookRepository.findAll();
   }
 
-  public Iterable<Book> findAllByCategory(String category) {
+  public List<Book> findAllByCategory(String category) {
     return bookRepository.findAllByCategory(category);
   }
 

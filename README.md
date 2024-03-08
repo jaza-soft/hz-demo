@@ -49,7 +49,6 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 ```
 
 ## Standalone entity
-
 **L2 Cache**
 
 - Only adding `@org.hibernate.annotations.Cache` annotation is enough. No additional config required.
@@ -61,3 +60,19 @@ public interface BookRepository extends CrudRepository<Book, Long> {
 
 - Need to add `@org.springframework.data.jpa.repository.QueryHints` annotation on Repository methods for which cache needs to enabled
 - Hibernate invalidates cache even if there are any changes in current table as well as other table
+
+## ManyToOne Relation
+**L2 Cache**
+
+- If Parent entity is not cached, then call for fetching parent will be done every time
+- If Parent entity is cached, then entity is fully cached and subsequent call do not make db call for current and parent entity
+- Cache invalidation is handled as per expectation by Hibernate
+  - If parent is updated, cache is updated with updated value of parent
+
+## OneToMany Relation
+**L2 Cache**
+
+- child relations are not cached by default. 
+  - Need to use `@Cache` annotation of childList property
+  - Also, Child entity should be cached using `@Cache` annotation.
+- Set `hibernate.cache.auto_evict_collection_cache=true` if child is managed by parent. This will keep state upto date, else there will stale data

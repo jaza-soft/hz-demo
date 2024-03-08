@@ -23,6 +23,9 @@ spring:
         hbm2ddl:
           auto: update
         cache:
+          hazelcast:
+            use_native_client: true
+            configuration_file_path: hazelcast-client.xml
           use_second_level_cache: true
 #          use_query_cache: false
 #          auto_evict_collection_cache: false

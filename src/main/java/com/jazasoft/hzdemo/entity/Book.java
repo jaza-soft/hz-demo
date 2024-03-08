@@ -10,12 +10,14 @@ import javax.persistence.*;
 @Cache(region = "book", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
 public class Book {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
+
   private String name;
 
-  public String category;
+  private String category;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
 //  @ManyToOne(fetch = FetchType.LAZY)

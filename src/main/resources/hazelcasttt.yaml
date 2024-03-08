@@ -1,0 +1,14 @@
+hazelcast:
+  cluster-name: hz_demo
+  map:
+    default:
+      time-to-live-seconds: 3600
+  network:
+    join:
+      multicast:
+        enabled: true
+    rest-api:
+      enabled: false
+      endpoint-groups:
+        DATA:
+          enabled: false

@@ -5,11 +5,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-@Cache(region = "book", usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(region = "book", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
-public class Book {
+public class Book implements Serializable {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -5,19 +5,20 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Cache(region = "author", usage = CacheConcurrencyStrategy.READ_WRITE)
+//@Cache(region = "author", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
-public class Author {
+public class Author implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
 
-  @Cache(region = "author.books", usage = CacheConcurrencyStrategy.READ_WRITE)
+//  @Cache(region = "author.books", usage = CacheConcurrencyStrategy.READ_WRITE)
   @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Book> bookList = new ArrayList<>();
 

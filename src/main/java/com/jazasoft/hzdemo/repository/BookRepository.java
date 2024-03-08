@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface BookRepository extends JpaRepository<Book, Long> {
 
-  @Cacheable(value = "query.book.findAllByCategory", key = "#category")
+//  @Cacheable(value = "query.book.findAllByCategory", key = "#category")
   List<Book> findAllByCategory(String category);
 }

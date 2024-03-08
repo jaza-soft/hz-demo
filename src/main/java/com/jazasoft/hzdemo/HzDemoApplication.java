@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.hazelcast.HazelcastAutoConfiguration;
 import org.springframework.cache.annotation.EnableCaching;
 
-@SpringBootApplication(exclude = HazelcastAutoConfiguration.class)
+@SpringBootApplication
 @EnableCaching
 public class HzDemoApplication {
 	public static void main(String[] args) {

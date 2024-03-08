@@ -22,13 +22,13 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQL94Dialect
         hbm2ddl:
           auto: update
-        cache:
-          use_second_level_cache: true
-#          use_query_cache: true
+#        cache:
+#          use_second_level_cache: true
+#          use_query_cache: false
 #          auto_evict_collection_cache: false
-#          use_structured_entries: true
-          region:
-            factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
+#          use_structured_entries: false
+#          region:
+#            factory_class: com.hazelcast.hibernate.HazelcastCacheRegionFactory
 
 #        jdbc:
 #          lob:

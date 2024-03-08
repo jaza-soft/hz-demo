@@ -1,11 +1,14 @@
 package com.jazasoft.hzdemo.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jazasoft.hzdemo.entity.Book;
 import com.jazasoft.hzdemo.repository.AuthorRepository;
 import com.jazasoft.hzdemo.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +21,7 @@ public class BookService {
   private final AuthorRepository authorRepository;
 
   private CacheManager cacheManager;
+  private ObjectMapper objectMapper;
 
   public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
     this.bookRepository = bookRepository;
@@ -29,6 +33,11 @@ public class BookService {
     this.cacheManager = cacheManager;
   }
 
+  @Autowired
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
+
   public Book findOne(Long id) {
     return bookRepository.findById(id).orElse(null);
   }
@@ -37,8 +46,20 @@ public class BookService {
     return bookRepository.findAll();
   }
 
+  @Cacheable(value = "query.book.findAllByCategory", key = "#category")
   public List<Book> findAllByCategory(String category) {
-    return bookRepository.findAllByCategory(category);
+    List<Book> books = bookRepository.findAllByCategory(category);
+    try {
+      books.forEach(book -> {
+        if (book.getAuthor() != null) {
+          book.getAuthor().setBookList(null);
+        }
+      });
+      objectMapper.writer().writeValueAsString(books);
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+    return books;
   }
 
   @Transactional

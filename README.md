@@ -76,3 +76,4 @@ public interface BookRepository extends CrudRepository<Book, Long> {
   - Need to use `@Cache` annotation of childList property
   - Also, Child entity should be cached using `@Cache` annotation.
 - Set `hibernate.cache.auto_evict_collection_cache=true` if child is managed by parent. This will keep state upto date, else there will stale data
+  - On Testing, behaviour was same irrespective of this setting

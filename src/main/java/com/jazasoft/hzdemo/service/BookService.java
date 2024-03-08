@@ -25,6 +25,10 @@ public class BookService {
     return bookRepository.findAll();
   }
 
+  public Iterable<Book> findAllByCategory(String category) {
+    return bookRepository.findAllByCategory(category);
+  }
+
   @Transactional
   public Book save(Book book) {
     if (book.getAuthorId() != null) {
@@ -40,6 +44,7 @@ public class BookService {
       mBook.setAuthor(authorRepository.findById(book.getAuthorId()).orElse(null));
     }
     mBook.setName(book.getName());
+    mBook.setCategory(book.getCategory());
     return mBook;
   }
 

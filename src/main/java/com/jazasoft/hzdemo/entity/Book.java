@@ -15,7 +15,11 @@ public class Book {
   private Long id;
   private String name;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  public String category;
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//  @ManyToOne(fetch = FetchType.LAZY)
+//  @ManyToOne(optional = false)
 //  @ManyToOne
   private Author author;
 
@@ -60,6 +64,14 @@ public class Book {
 
   public void setAuthorId(Long authorId) {
     this.authorId = authorId;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
   }
 
   @Override

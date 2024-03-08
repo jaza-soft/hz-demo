@@ -12,6 +12,16 @@ import javax.persistence.QueryHint;
 public interface BookRepository extends CrudRepository<Book, Long> {
   @Override
   @NonNull
-  @QueryHints({ @QueryHint(name = "org.hibernate.cacheable", value ="true") })
+  @QueryHints({
+      @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"),
+      @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHE_REGION, value = "book.findAll")
+  })
   Iterable<Book> findAll();
+
+
+  @QueryHints({
+      @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHEABLE, value = "true"),
+      @QueryHint(name = org.hibernate.jpa.QueryHints.HINT_CACHE_REGION, value = "book.findAllByCategory")
+  })
+  Iterable<Book> findAllByCategory(String category);
 }

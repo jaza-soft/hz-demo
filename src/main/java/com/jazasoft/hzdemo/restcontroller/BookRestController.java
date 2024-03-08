@@ -16,19 +16,30 @@ public class BookRestController {
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    return ResponseEntity.ok(bookService.findAll());
+    Iterable<Book> books = bookService.findAll();
+    books.forEach(this::sanitize);
+    return ResponseEntity.ok(books);
+  }
+
+  @GetMapping("/search-by-category")
+  public ResponseEntity<?> findAllByCategory(@RequestParam("category") String category) {
+    Iterable<Book> books = bookService.findAllByCategory(category);
+    books.forEach(this::sanitize);
+    return ResponseEntity.ok(books);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable("id") Long id) {
     Book book = bookService.findOne(id);
     if (book == null) return ResponseEntity.notFound().build();
+    sanitize(book);
     return ResponseEntity.ok(book);
   }
 
   @PostMapping
   public ResponseEntity<?> save(@RequestBody Book book) {
     Book mBook = bookService.save(book);
+    sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
 
@@ -36,6 +47,7 @@ public class BookRestController {
   public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Book book) {
     book.setId(id);
     Book mBook = bookService.update(book);
+    sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
 
@@ -43,5 +55,12 @@ public class BookRestController {
   public ResponseEntity<?> deleteOne(@PathVariable("id") Long id) {
     bookService.delete(id);
     return ResponseEntity.noContent().build();
+  }
+
+  private void sanitize(Book book) {
+    if (book == null) return;
+    if (book.getAuthor() != null) {
+      book.getAuthor().setBookList(null);
+    }
   }
 }

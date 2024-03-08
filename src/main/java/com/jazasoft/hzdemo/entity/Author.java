@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Cache(region = "author", usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -17,6 +16,10 @@ public class Author {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   private String name;
+
+  @Cache(region = "author.books", usage = CacheConcurrencyStrategy.READ_WRITE)
+  @OneToMany(mappedBy = "author")
+  private List<Book> bookList = new ArrayList<>();
 
   public Author() {
   }
@@ -40,6 +43,14 @@ public class Author {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public List<Book> getBookList() {
+    return bookList;
+  }
+
+  public void setBookList(List<Book> bookList) {
+    this.bookList = bookList;
   }
 
   @Override

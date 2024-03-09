@@ -9,7 +9,6 @@ import com.hazelcast.query.Predicates;
 import com.jazasoft.hz.mapstore.entity.Book;
 import com.jazasoft.hz.mapstore.key.BookKey;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,8 +41,6 @@ public class CachedBookService {
     return new ArrayList<>(bookCache.values(predicate));
   }
 
-
-  @Transactional
   public Book save(Book book) {
     book.setId(idGenerator.newId());
     bookCache.put(book.key(), book);

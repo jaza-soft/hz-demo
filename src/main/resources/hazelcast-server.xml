@@ -3,22 +3,51 @@
 <hazelcast xmlns="http://www.hazelcast.com/schema/config"
            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
            xsi:schemaLocation="http://www.hazelcast.com/schema/config
-           http://www.hazelcast.com/schema/config/hazelcast-config-4.2.xsd">
-    <cluster-name>hz_demo2</cluster-name>
+           http://www.hazelcast.com/schema/config/hazelcast-config-5.3.xsd">
+    <cluster-name>hz_demo</cluster-name>
     <management-center scripting-enabled="false" />
+    <jet enabled="true" />
     <network>
         <join>
-            <multicast enabled="true">
+            <multicast enabled="false">
             </multicast>
-            <tcp-ip enabled="false">
-                <interface>127.0.0.1</interface>
+            <tcp-ip enabled="true">
+                <interface>192.168.1.110</interface>
                 <member-list>
-                    <member>127.0.0.1</member>
+                    <member>192.168.1.110</member>
                 </member-list>
             </tcp-ip>
         </join>
     </network>
-    <map name="default">
-        <time-to-live-seconds>3600</time-to-live-seconds>
+    <flake-id-generator name="default">
+        <prefetch-count>10</prefetch-count>
+        <prefetch-validity-millis>600000</prefetch-validity-millis>
+        <epoch-start>1514764800000</epoch-start>
+        <node-id-offset>0</node-id-offset>
+        <bits-sequence>6</bits-sequence>
+        <bits-node-id>16</bits-node-id>
+        <allowed-future-millis>15000</allowed-future-millis>
+        <statistics-enabled>true</statistics-enabled>
+    </flake-id-generator>
+    <map name="Author">
+        <map-store enabled="true">
+            <class-name>com.jazasoft.hz.mapstore.AuthorMapStore</class-name>
+            <properties>
+                <property name="jdbcUrl">jdbc:postgresql://192.168.1.110:5432/hz_demo</property>
+                <property name="username">postgres</property>
+                <property name="password">zahid7292</property>
+            </properties>
+        </map-store>
+    </map>
+    <map name="Book">
+        <map-store enabled="true">
+            <class-name>com.jazasoft.hz.mapstore.BookMapStore</class-name>
+            <properties>
+                <property name="jdbcUrl">jdbc:postgresql://192.168.1.110:5432/hz_demo</property>
+                <property name="username">postgres</property>
+                <property name="password">zahid7292</property>
+                <property name="authorMapName">Author</property>
+            </properties>
+        </map-store>
     </map>
 </hazelcast>

@@ -1,13 +1,13 @@
 package com.jazasoft.hzdemo.service;
 
 import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import com.hazelcast.map.IMap;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.PredicateBuilder;
 import com.hazelcast.query.Predicates;
 import com.jazasoft.hz.mapstore.entity.Book;
 import com.jazasoft.hz.mapstore.key.BookKey;
-import com.jazasoft.hzdemo.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,15 +16,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 public class CachedBookService {
-  private final BookRepository bookRepository;
-
   private final IMap<BookKey, Book> bookCache;
+  private final FlakeIdGenerator idGenerator;
 
-  public CachedBookService(BookRepository bookRepository, HazelcastInstance hazelcast) {
-    this.bookRepository = bookRepository;
+  public CachedBookService(HazelcastInstance hazelcast) {
     this.bookCache = hazelcast.getMap(Book.class.getSimpleName());
+    this.idGenerator = hazelcast.getFlakeIdGenerator("default");
   }
 
   public Book findOne(Long id, String category) {
@@ -47,8 +45,7 @@ public class CachedBookService {
 
   @Transactional
   public Book save(Book book) {
-    Long id = bookRepository.nextId();
-    book.setId(id);
+    book.setId(idGenerator.newId());
     bookCache.put(book.key(), book);
     return bookCache.get(book.key());
   }

@@ -2,6 +2,8 @@ package com.jazasoft.hzdemo.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.map.IMap;
 import com.jazasoft.hzdemo.entity.Book;
 import com.jazasoft.hzdemo.repository.AuthorRepository;
 import com.jazasoft.hzdemo.repository.BookRepository;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,6 +26,7 @@ public class BookService {
 
   private CacheManager cacheManager;
   private ObjectMapper objectMapper;
+  private HazelcastInstance hazelcast;
 
   public BookService(BookRepository bookRepository, AuthorRepository authorRepository) {
     this.bookRepository = bookRepository;
@@ -39,12 +43,19 @@ public class BookService {
     this.objectMapper = objectMapper;
   }
 
+  @Autowired
+  public void setHazelcast(HazelcastInstance hazelcast) {
+    this.hazelcast = hazelcast;
+  }
+
   public Book findOne(Long id) {
-    return bookRepository.findById(id).orElse(null);
+    IMap<Object, Object> bookCache = hazelcast.getMap("book-cache");
+    return  (Book)bookCache.get(id);
   }
 
   public List<Book> findAll() {
-    return bookRepository.findAll();
+    IMap<Object, Object> bookCache = hazelcast.getMap("book-cache");
+    return bookCache.values().stream().map(val -> (Book)val).collect(Collectors.toList());
   }
 
   @Cacheable(value = CACHE_BOOK_BY_CATEGORY, key = "#category")

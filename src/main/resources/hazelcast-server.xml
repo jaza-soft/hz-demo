@@ -26,7 +26,6 @@
                 <property name="jdbcUrl">jdbc:postgresql://192.168.1.110:5432/hz_demo</property>
                 <property name="username">postgres</property>
                 <property name="password">zahid7292</property>
-                <property name="bookMapName">Book</property>
             </properties>
         </map-store>
     </map>

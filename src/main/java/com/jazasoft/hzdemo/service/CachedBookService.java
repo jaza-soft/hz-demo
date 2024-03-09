@@ -49,17 +49,17 @@ public class CachedBookService {
   public Book save(Book book) {
     Long id = bookRepository.nextId();
     book.setId(id);
-    bookCache.put(book.getKey(), book);
-    return bookCache.get(book.getKey());
+    bookCache.put(book.key(), book);
+    return bookCache.get(book.key());
   }
 
   public Book update(Book book) {
-    Book mBook = bookCache.get(book.getKey());
+    Book mBook = bookCache.get(book.key());
     mBook.setName(book.getName());
     mBook.setCategory(book.getCategory());
     mBook.setAuthorId(book.getAuthorId());
-    bookCache.put(book.getKey(), mBook);
-    return bookCache.get(book.getKey());
+    bookCache.put(book.key(), mBook);
+    return bookCache.get(book.key());
   }
 
   public void evict() {

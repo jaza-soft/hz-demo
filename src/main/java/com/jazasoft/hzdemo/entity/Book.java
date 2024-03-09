@@ -14,20 +14,20 @@ import java.io.Serializable;
 public class Book implements Serializable {
 
   @Id
-  @GeneratedValue(
-      strategy = GenerationType.SEQUENCE,
-      generator = "book_generator"
-  )
-  @GenericGenerator(
-      name = "book_generator",
-      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-      parameters = {
-          @org.hibernate.annotations.Parameter(name = "sequence_name", value = "book_seq"),
-          @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
-          @org.hibernate.annotations.Parameter(name = "increment_size", value = "10"),
-          @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
-      }
-  )
+//  @GeneratedValue(
+//      strategy = GenerationType.SEQUENCE,
+//      generator = "book_generator"
+//  )
+//  @GenericGenerator(
+//      name = "book_generator",
+//      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
+//      parameters = {
+//          @org.hibernate.annotations.Parameter(name = "sequence_name", value = "book_seq"),
+//          @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
+//          @org.hibernate.annotations.Parameter(name = "increment_size", value = "10"),
+//          @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
+//      }
+//  )
   private Long id;
 
   private String name;

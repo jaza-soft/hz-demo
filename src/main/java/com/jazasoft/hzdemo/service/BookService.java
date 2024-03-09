@@ -70,18 +70,29 @@ public class BookService {
     return books;
   }
 
+
   @Transactional
   public Book save(Book book) {
-    if (book.getAuthorId() != null) {
-      book.setAuthor(authorRepository.findById(book.getAuthorId()).orElse(null));
-    }
-    Book mBook = bookRepository.save(book);
+    IMap<Object, Object> bookCache = hazelcast.getMap("book-cache");
 
-    //** Evict Spring Cache for query matching this category **//
-    evictCache(CACHE_BOOK_BY_CATEGORY, mBook.getCategory());
-
-    return mBook;
+    Long id = bookRepository.nextId();
+    book.setId(id);
+    bookCache.put(book.getId(), book);
+    return (Book) bookCache.get(book.getId());
   }
+
+//  @Transactional
+//  public Book save(Book book) {
+//    if (book.getAuthorId() != null) {
+//      book.setAuthor(authorRepository.findById(book.getAuthorId()).orElse(null));
+//    }
+//    Book mBook = bookRepository.save(book);
+//
+//    //** Evict Spring Cache for query matching this category **//
+//    evictCache(CACHE_BOOK_BY_CATEGORY, mBook.getCategory());
+//
+//    return mBook;
+//  }
 
   @Transactional
   public Book update(Book book) {

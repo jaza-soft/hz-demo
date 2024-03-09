@@ -5,8 +5,8 @@ import com.hazelcast.map.IMap;
 import com.hazelcast.query.Predicate;
 import com.hazelcast.query.PredicateBuilder;
 import com.hazelcast.query.Predicates;
-import com.jazasoft.hzdemo.entity.Book;
-import com.jazasoft.hzdemo.entity.BookKey;
+import com.jazasoft.hz.mapstore.entity.Book;
+import com.jazasoft.hz.mapstore.key.BookKey;
 import com.jazasoft.hzdemo.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,14 +17,14 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-public class BookService {
+public class CachedBookService {
   private final BookRepository bookRepository;
 
   private final IMap<BookKey, Book> bookCache;
 
-  public BookService(BookRepository bookRepository, HazelcastInstance hazelcast) {
+  public CachedBookService(BookRepository bookRepository, HazelcastInstance hazelcast) {
     this.bookRepository = bookRepository;
-    this.bookCache = hazelcast.getMap("book-cache");
+    this.bookCache = hazelcast.getMap(Book.class.getSimpleName());
   }
 
   public Book findOne(Long id, String category) {
@@ -66,7 +66,6 @@ public class BookService {
     bookCache.evictAll();
   }
 
-  @Transactional
   public void delete(Long id, String category) {
     bookCache.remove(new BookKey(id, category));
   }

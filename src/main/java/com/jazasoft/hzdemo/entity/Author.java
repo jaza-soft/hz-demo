@@ -11,29 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Cache(region = "author", usage = CacheConcurrencyStrategy.READ_WRITE)
 @JsonIgnoreProperties(ignoreUnknown = true, value = {"hibernateLazyInitializer", "handler"})
 public class Author implements Serializable {
   @Id
-  @GeneratedValue(
-      strategy = GenerationType.SEQUENCE,
-      generator = "author_generator"
-  )
-  @GenericGenerator(
-      name = "author_generator",
-      strategy = "org.hibernate.id.enhanced.SequenceStyleGenerator",
-      parameters = {
-          @org.hibernate.annotations.Parameter(name = "sequence_name", value = "author_seq"),
-          @org.hibernate.annotations.Parameter(name = "initial_value", value = "1"),
-          @org.hibernate.annotations.Parameter(name = "increment_size", value = "10"),
-          @org.hibernate.annotations.Parameter(name = "optimizer", value = "pooled-lo")
-      }
-  )
   private Long id;
   private String name;
 
-  @Cache(region = "author.books", usage = CacheConcurrencyStrategy.READ_WRITE)
-  @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "author")
   private List<Book> bookList = new ArrayList<>();
 
   public Author() {

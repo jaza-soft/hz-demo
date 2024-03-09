@@ -1,7 +1,7 @@
 package com.jazasoft.hzdemo.restcontroller;
 
-import com.jazasoft.hzdemo.entity.Book;
-import com.jazasoft.hzdemo.service.BookService;
+import com.jazasoft.hz.mapstore.entity.Book;
+import com.jazasoft.hzdemo.service.CachedBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,29 +10,29 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/books")
 public class BookRestController {
-  private final BookService bookService;
+  private final CachedBookService cachedBookService;
 
-  public BookRestController(BookService bookService) {
-    this.bookService = bookService;
+  public BookRestController(CachedBookService cachedBookService) {
+    this.cachedBookService = cachedBookService;
   }
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    List<Book> books = bookService.findAll();
+    List<Book> books = cachedBookService.findAll();
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping("/search-by-category")
   public ResponseEntity<?> findAllByCategory(@RequestParam("category") String category) {
-    List<Book> books = bookService.findAllByCategory(category);
+    List<Book> books = cachedBookService.findAllByCategory(category);
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable("id") Long id, @RequestParam("category") String category) {
-    Book book = bookService.findOne(id, category);
+    Book book = cachedBookService.findOne(id, category);
     if (book == null) return ResponseEntity.notFound().build();
     sanitize(book);
     return ResponseEntity.ok(book);
@@ -40,7 +40,7 @@ public class BookRestController {
 
   @PostMapping
   public ResponseEntity<?> save(@RequestBody Book book) {
-    Book mBook = bookService.save(book);
+    Book mBook = cachedBookService.save(book);
     sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
@@ -48,27 +48,27 @@ public class BookRestController {
   @PutMapping("/{id}")
   public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Book book) {
     book.setId(id);
-    Book mBook = bookService.update(book);
+    Book mBook = cachedBookService.update(book);
     sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
 
   @DeleteMapping("/{id}")
   public ResponseEntity<?> deleteOne(@PathVariable("id") Long id, @RequestParam("category") String category) {
-    bookService.delete(id, category);
+    cachedBookService.delete(id, category);
     return ResponseEntity.noContent().build();
   }
 
   @DeleteMapping("/evict")
   public ResponseEntity<?> evict() {
-    bookService.evict();
+    cachedBookService.evict();
     return ResponseEntity.noContent().build();
   }
 
   private void sanitize(Book book) {
     if (book == null) return;
-    if (book.getAuthor() != null) {
-      book.getAuthor().setBookList(null);
-    }
+//    if (book.getAuthor() != null) {
+//      book.getAuthor().setBookList(null);
+//    }
   }
 }

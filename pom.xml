@@ -44,6 +44,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.jazasoft.hz.mapstore</groupId>
+            <artifactId>hz-mapstore</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast-hibernate53</artifactId>
             <version>5.1.0</version>

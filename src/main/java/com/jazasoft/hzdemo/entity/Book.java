@@ -1,5 +1,6 @@
 package com.jazasoft.hzdemo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -49,6 +50,12 @@ public class Book implements Serializable {
   public Book(Long id, String name) {
     this.id = id;
     this.name = name;
+  }
+
+  @JsonIgnore
+  public BookKey getKey() {
+    if (id == null || category == null) return null;
+    return new BookKey(id, category);
   }
 
   public Long getId() {

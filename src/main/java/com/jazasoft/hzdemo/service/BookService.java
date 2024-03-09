@@ -6,6 +6,7 @@ import com.hazelcast.query.Predicate;
 import com.hazelcast.query.PredicateBuilder;
 import com.hazelcast.query.Predicates;
 import com.jazasoft.hzdemo.entity.Book;
+import com.jazasoft.hzdemo.entity.BookKey;
 import com.jazasoft.hzdemo.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,15 +20,15 @@ import java.util.List;
 public class BookService {
   private final BookRepository bookRepository;
 
-  private final IMap<Long, Book> bookCache;
+  private final IMap<BookKey, Book> bookCache;
 
   public BookService(BookRepository bookRepository, HazelcastInstance hazelcast) {
     this.bookRepository = bookRepository;
     this.bookCache = hazelcast.getMap("book-cache");
   }
 
-  public Book findOne(Long id) {
-    return  bookCache.get(id);
+  public Book findOne(Long id, String category) {
+    return  bookCache.get(new BookKey(id, category));
   }
 
   public List<Book> findAll() {
@@ -39,7 +40,7 @@ public class BookService {
   @SuppressWarnings("unchecked")
   public List<Book> findAllByCategory(String category) {
     PredicateBuilder.EntryObject pb = Predicates.newPredicateBuilder().getEntryObject();
-    Predicate<Long, Book> predicate = (Predicate<Long, Book>) pb.get("category").equal(category);
+    Predicate<BookKey, Book> predicate = (Predicate<BookKey, Book>) pb.get("category").equal(category);
     return new ArrayList<>(bookCache.values(predicate));
   }
 
@@ -48,17 +49,17 @@ public class BookService {
   public Book save(Book book) {
     Long id = bookRepository.nextId();
     book.setId(id);
-    bookCache.put(book.getId(), book);
-    return bookCache.get(book.getId());
+    bookCache.put(book.getKey(), book);
+    return bookCache.get(book.getKey());
   }
 
   public Book update(Book book) {
-    Book mBook = bookCache.get(book.getId());
+    Book mBook = bookCache.get(book.getKey());
     mBook.setName(book.getName());
     mBook.setCategory(book.getCategory());
     mBook.setAuthorId(book.getAuthorId());
-    bookCache.put(book.getId(), mBook);
-    return bookCache.get(book.getId());
+    bookCache.put(book.getKey(), mBook);
+    return bookCache.get(book.getKey());
   }
 
   public void evict() {
@@ -66,7 +67,7 @@ public class BookService {
   }
 
   @Transactional
-  public void delete(Long id) {
-    bookCache.remove(id);
+  public void delete(Long id, String category) {
+    bookCache.remove(new BookKey(id, category));
   }
 }

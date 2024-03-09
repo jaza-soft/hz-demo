@@ -31,8 +31,8 @@ public class BookRestController {
   }
 
   @GetMapping("/{id}")
-  public ResponseEntity<?> findOne(@PathVariable("id") Long id) {
-    Book book = bookService.findOne(id);
+  public ResponseEntity<?> findOne(@PathVariable("id") Long id, @RequestParam("category") String category) {
+    Book book = bookService.findOne(id, category);
     if (book == null) return ResponseEntity.notFound().build();
     sanitize(book);
     return ResponseEntity.ok(book);
@@ -54,8 +54,8 @@ public class BookRestController {
   }
 
   @DeleteMapping("/{id}")
-  public ResponseEntity<?> deleteOne(@PathVariable("id") Long id) {
-    bookService.delete(id);
+  public ResponseEntity<?> deleteOne(@PathVariable("id") Long id, @RequestParam("category") String category) {
+    bookService.delete(id, category);
     return ResponseEntity.noContent().build();
   }
 

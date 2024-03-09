@@ -59,6 +59,12 @@ public class BookRestController {
     return ResponseEntity.noContent().build();
   }
 
+  @DeleteMapping("/evict")
+  public ResponseEntity<?> evict() {
+    bookService.evict();
+    return ResponseEntity.noContent().build();
+  }
+
   private void sanitize(Book book) {
     if (book == null) return;
     if (book.getAuthor() != null) {

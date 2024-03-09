@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -26,12 +27,13 @@ public class BookService {
   }
 
   public Book findOne(Long id) {
-
     return  bookCache.get(id);
   }
 
   public List<Book> findAll() {
-    return new ArrayList<>(bookCache.values());
+    bookCache.loadAll(false);
+    Collection<Book> books = bookCache.values();
+    return new ArrayList<>(books);
   }
 
   @SuppressWarnings("unchecked")
@@ -57,6 +59,10 @@ public class BookService {
     mBook.setAuthorId(book.getAuthorId());
     bookCache.put(book.getId(), mBook);
     return bookCache.get(book.getId());
+  }
+
+  public void evict() {
+    bookCache.evictAll();
   }
 
   @Transactional

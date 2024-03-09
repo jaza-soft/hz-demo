@@ -1,6 +1,6 @@
 package com.jazasoft.hzdemo.restcontroller;
 
-import com.jazasoft.hz.mapstore.entity.Author;
+import com.jazasoft.hz.entity.HAuthor;
 import com.jazasoft.hzdemo.service.CachedAuthorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,30 +18,30 @@ public class AuthorRestController {
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    List<Author> authors = cachedAuthorService.findAll();
+    List<HAuthor> authors = cachedAuthorService.findAll();
     authors.forEach(this::sanitize);
     return ResponseEntity.ok(authors);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable("id") Long id) {
-    Author author = cachedAuthorService.findOne(id);
+    HAuthor author = cachedAuthorService.findOne(id);
     if (author == null) return ResponseEntity.notFound().build();
     sanitize(author);
     return ResponseEntity.ok(author);
   }
 
   @PostMapping
-  public ResponseEntity<?> save(@RequestBody Author author) {
-    Author mAuthor = cachedAuthorService.save(author);
+  public ResponseEntity<?> save(@RequestBody HAuthor author) {
+    HAuthor mAuthor = cachedAuthorService.save(author);
     sanitize(mAuthor);
     return ResponseEntity.ok(mAuthor);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Author author) {
+  public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody HAuthor author) {
     author.setId(id);
-    Author mAuthor = cachedAuthorService.update(author);
+    HAuthor mAuthor = cachedAuthorService.update(author);
     sanitize(mAuthor);
     return ResponseEntity.ok(mAuthor);
   }
@@ -52,7 +52,7 @@ public class AuthorRestController {
     return ResponseEntity.noContent().build();
   }
 
-  private void sanitize(Author author) {
+  private void sanitize(HAuthor author) {
     if (author == null) return;
   }
 

@@ -1,6 +1,6 @@
 package com.jazasoft.hzdemo.restcontroller;
 
-import com.jazasoft.hz.mapstore.entity.Book;
+import com.jazasoft.hz.entity.HBook;
 import com.jazasoft.hzdemo.service.CachedBookService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,37 +18,37 @@ public class BookRestController {
 
   @GetMapping
   public ResponseEntity<?> findAll() {
-    List<Book> books = cachedBookService.findAll();
+    List<HBook> books = cachedBookService.findAll();
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping("/search-by-category")
   public ResponseEntity<?> findAllByCategory(@RequestParam("category") String category) {
-    List<Book> books = cachedBookService.findAllByCategory(category);
+    List<HBook> books = cachedBookService.findAllByCategory(category);
     books.forEach(this::sanitize);
     return ResponseEntity.ok(books);
   }
 
   @GetMapping("/{id}")
   public ResponseEntity<?> findOne(@PathVariable("id") Long id, @RequestParam("category") String category) {
-    Book book = cachedBookService.findOne(id, category);
+    HBook book = cachedBookService.findOne(id, category);
     if (book == null) return ResponseEntity.notFound().build();
     sanitize(book);
     return ResponseEntity.ok(book);
   }
 
   @PostMapping
-  public ResponseEntity<?> save(@RequestBody Book book) {
-    Book mBook = cachedBookService.save(book);
+  public ResponseEntity<?> save(@RequestBody HBook book) {
+    HBook mBook = cachedBookService.save(book);
     sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
 
   @PutMapping("/{id}")
-  public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody Book book) {
+  public ResponseEntity<?> update(@PathVariable("id") Long id, @RequestBody HBook book) {
     book.setId(id);
-    Book mBook = cachedBookService.update(book);
+    HBook mBook = cachedBookService.update(book);
     sanitize(mBook);
     return ResponseEntity.ok(mBook);
   }
@@ -65,7 +65,7 @@ public class BookRestController {
     return ResponseEntity.noContent().build();
   }
 
-  private void sanitize(Book book) {
+  private void sanitize(HBook book) {
     if (book == null) return;
 //    if (book.getAuthor() != null) {
 //      book.getAuthor().setBookList(null);

@@ -3,7 +3,8 @@ package com.jazasoft.hzdemo.service;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.flakeidgen.FlakeIdGenerator;
 import com.hazelcast.map.IMap;
-import com.jazasoft.hz.mapstore.entity.Author;
+import com.jazasoft.hz.entity.HAuthor;
+import com.jazasoft.hzdemo.entity.Author;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Service
 public class CachedAuthorService {
-  public final IMap<Long, Author> authorCache;
+  public final IMap<Long, HAuthor> authorCache;
   private final FlakeIdGenerator idGenerator;
 
   public CachedAuthorService(HazelcastInstance hazelcastInstance) {
@@ -20,24 +21,24 @@ public class CachedAuthorService {
     this.idGenerator = hazelcastInstance.getFlakeIdGenerator("default");
   }
 
-  public Author findOne(Long id) {
+  public HAuthor findOne(Long id) {
     return authorCache.get(id);
   }
 
-  public List<Author> findAll() {
+  public List<HAuthor> findAll() {
     authorCache.loadAll(false);
-    Collection<Author> authors = authorCache.values();
+    Collection<HAuthor> authors = authorCache.values();
     return new ArrayList<>(authors);
   }
 
-  public Author save(Author author) {
+  public HAuthor save(HAuthor author) {
     author.setId(idGenerator.newId());
     authorCache.put(author.getId(), author);
     return authorCache.get(author.getId());
   }
 
-  public Author update(Author author) {
-    Author mAuthor = authorCache.get(author.getId());
+  public HAuthor update(HAuthor author) {
+    HAuthor mAuthor = authorCache.get(author.getId());
     mAuthor.setName(author.getName());
     authorCache.put(author.getId(), mAuthor);
     return authorCache.get(author.getId());

@@ -21,7 +21,6 @@ public class Runner implements CommandLineRunner {
       if (hazelcast != null) {
         Collection<DistributedObject> distributedObjects = hazelcast.getDistributedObjects();
         for (DistributedObject object : distributedObjects) {
-          System.out.println("ObjectName="+ DistributedObjectUtil.getName(object));
           if (object instanceof IMap) {
             IMap map = hazelcast.getMap(object.getName());
             System.out.println("MapName=" + map.getName());
